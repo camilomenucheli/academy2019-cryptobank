@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import firebase from 'firebase'
+import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -10,16 +11,16 @@ const router = new Router({
   routes: [
     {
       path: '*',
-      redirect: '/'
+      redirect: '/home'
     },
     {
       path: '/',
-      redirect: '/'
+      redirect: '/home'
     },
     {
-      path: '/',
+      path: '/home',
       name: 'home',
-      component: () => import(/* webpackChunkName: "login" */ './views/Home.vue'),
+      component: Home,
       meta: {
         requiresAuth: true
       }
@@ -28,6 +29,11 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
+    },
+    {
+      path: '/create_account',
+      name: 'create_account',
+      component: () => import(/* webpackChunkName: "create_account" */ './views/CreateAccount.vue')
     }
   ]
 })

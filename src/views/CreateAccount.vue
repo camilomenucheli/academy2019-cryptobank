@@ -1,9 +1,9 @@
 <template>
-  <div class="login">
+  <div class="createaccount">
     <div class="content center">
       <img class="logo" :src="require('../assets/logo.svg')" alt="Logo"/>
 
-      <form class="login-form" @submit.prevent="submitLogin">
+      <form class="createaccount-form" @submit.prevent="createAccount">
         <div class="input-control">
           <label for="email-input">E-mail</label>
           <input v-model="email" type="email" id="email-input" required name="email" class="input" placeholder="Digite seu e-mail">
@@ -13,19 +13,19 @@
           <label for="password-input">Senha</label>
           <input v-model="password" type="password" id="password-input" required name="password" class="input" placeholder="Digite sua senha">
         </div>
-        <p v-if="!authOk">Usuário e/ou senha incorretos</p>
+
         <div class="actions">
-          <button type="submit" class="center">
-            Entrar
+          <button type="submit" id="create-account-button" class="center">
+            Criar conta
           </button>
         </div>
 
-        <br>
+        <br/>
 
         <div class="actions">
-          <p>Novo aqui?
-            <router-link to="/create_account">
-              Criar conta
+          <p>Já possui conta? 
+            <router-link to="/login">
+              Acessar
             </router-link>
           </p>
         </div>
@@ -33,23 +33,24 @@
     </div>
   </div>
 </template>
+
 <script>
 import firebase from 'firebase'
 
 export default {
-  name: 'Login',
   data: () => ({
     email: '',
-    password: '',
-    authOk: true
+    password: ''
   }),
+
   methods: {
-    submitLogin () {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+    createAccount () {
+      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.$router.push({ path: '/home' })
-        }).catch(() => {
-          this.authOk = false
+          alert('Conta criada com sucesso !')
+          this.$router.push({ path: '/login' })
+        }).catch((error) => {
+          alert('Erro ao criar conta \n\n' + error)
         })
     }
   }
@@ -57,7 +58,7 @@ export default {
 </script>
 
 <style scoped>
-  .login {
+  .createaccount {
     overflow: auto;
     background: url("../assets/fundo.png") no-repeat center center fixed;
     background-color: #333333;
@@ -66,7 +67,7 @@ export default {
     height: 100%;
   }
 
-  .login > .content {
+  .createaccount > .content {
     width: 320px;
     margin-top: 60px;
     margin-bottom: 60px;
@@ -77,7 +78,7 @@ export default {
     margin: 0 auto;
   }
 
-  .login-form {
+  .createaccount-form {
     margin-top: 78px;
   }
 
@@ -106,7 +107,7 @@ export default {
     background: #F2F2F2;
   }
 
-  .login-form > .actions > button[type="submit"] {
+  .createaccount-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
     border-radius: 100px;
@@ -118,7 +119,7 @@ export default {
     cursor: pointer;
   }
 
-  .login-form > .actions > button[type="submit"]:hover {
+  .createaccount-form > .actions > button[type="submit"]:hover {
       background-color: #FF6347;
   }
 
@@ -127,7 +128,7 @@ export default {
     display: block;
   }
 
-  .login > .content > .login-form > .input-control > label {
+  .createaccount > .content > .createaccount-form > .input-control > label {
     display: none;
   }
 
