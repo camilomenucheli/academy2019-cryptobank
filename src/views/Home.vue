@@ -8,6 +8,12 @@
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
+    <h1>TESTE</h1>
+    <div class="actions">
+      <button type="navigate" id="deposit-button" class="center" @click="handleDeposit">
+        Depositar
+      </button>
+    </div>
   </div>
 </template>
 
@@ -31,6 +37,10 @@ export default {
       }).catch(error => {
         alert('Erro ao desconectar. \n\n' + error)
       })
+    },
+
+    handleDeposit () {
+      this.$router.push({ path: '/deposit' })
     }
   }
 }
@@ -40,7 +50,6 @@ export default {
 <style scoped>
   .home {
     overflow: auto;
-    background: url("../assets/fundo.png") no-repeat center center fixed;
     background-color: #333333;
     background-size: cover;
     width: 100%;

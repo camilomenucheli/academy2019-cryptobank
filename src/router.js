@@ -34,6 +34,14 @@ const router = new Router({
       path: '/create_account',
       name: 'create_account',
       component: () => import(/* webpackChunkName: "create_account" */ './views/CreateAccount.vue')
+    },
+    {
+      path: '/deposit',
+      name: 'deposit',
+      component: () => import(/* webpackChunkName: "deposit" */ './views/Deposit.vue'),
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })

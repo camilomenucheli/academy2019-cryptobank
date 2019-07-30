@@ -23,7 +23,7 @@
         <br/>
 
         <div class="actions">
-          <p>Já possui conta? 
+          <p>Já possui conta?
             <router-link to="/login">
               Acessar
             </router-link>
