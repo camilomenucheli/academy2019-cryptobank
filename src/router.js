@@ -56,6 +56,14 @@ const router = new Router({
       meta: {
         requiresAuth: true, title: 'Pagar'
       }
+    },
+    {
+      path: '/transfer',
+      name: 'transfer',
+      component: () => import(/* webpackChunkName: "transfer" */ './views/Transfer.vue'),
+      meta: {
+        requiresAuth: true, title: 'Transferir'
+      }
     }
   ]
 })

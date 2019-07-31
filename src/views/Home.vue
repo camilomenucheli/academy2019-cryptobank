@@ -7,8 +7,15 @@
       <div>
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
+      <div slot="action-right" class="icon-button" tag="button" @click="signOut">
+        Sair
+      </div>
     </Header>
-    <h1>TESTE</h1>
+    <h3>Bem vindo, {{this.user}}</h3>
+    <div class="balance">
+      <p>Saldo disponível</p>
+      <p>$KA {{this.balance}}</p>
+    </div>
     <div class="actions">
       <button type="navigate" id="deposit-button" class="center" @click="handleDeposit">
         Depositar
@@ -30,9 +37,53 @@ import firebase from 'firebase'
 export default {
   name: 'home',
   data () {
+    return {
+      balance: null,
+      user: ''
+    }
   },
   components: {
     Header
+  },
+  mounted () {
+    const uid = firebase.auth().currentUser.uid
+    firebase.firestore().doc(`users/${uid}`).get()
+      .then(doc => {
+        if (!doc.exists) {
+          console.log('No such document!')
+        } else {
+          this.user = doc.data().email
+          this.balance = (doc.data().balance)
+        }
+      })
+      .catch(err => {
+        console.log('Error getting document', err)
+      })
+    // balanceSnapshotListener = firebase.firestore().collection('posts')
+    //   .where('userUid', '==', userUid)
+    //   .onSnapshot(snapshot => {
+    //     snapshot.docChanges().forEach(change => {
+    //       if (change.type === 'added') {
+    //         this.posts.push(change.doc.data())
+    //       }
+
+    //       if (change.type === 'modified') {
+    //         const { id } = change.doc.data()
+    //         const currentObject = this.posts.filter(post => post.id === id)[0]
+
+    //         this.posts[this.posts.indexOf(currentObject)] = change.doc.data()
+    //         this.$forceUpdate()
+    //       }
+
+    //       if (change.type === 'removed') {
+    //         const { id } = change.doc.data()
+    //         const currentObject = this.posts.filter(post => post.id === id)[0]
+
+    //         this.posts.splice(this.posts.indexOf(currentObject), 1)
+    //         this.$forceUpdate()
+    //       }
+    //     })
+    //   })
   },
 
   methods: {
@@ -54,7 +105,7 @@ export default {
     },
 
     handleTransfer () {
-      this.$router.push({ path: '/deposit' })
+      this.$router.push({ path: '/transfer' })
     }
   }
 }
@@ -71,15 +122,27 @@ export default {
     color: #fff;
   }
 
+  .home > .balance {
+    background-color: #fff;
+    width: 334pt;
+    height: 104pt;
+    color: #000;
+    margin: 1em auto;
+    border-radius: 5pt;
+    padding-top: 10pt;
+    padding-left: 10pt;
+    text-align: left
+  }
+
   .home > .actions > button[type="navigate"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 100px;
+    border-radius: 1em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;
-    width: 300px;
-    height: 48px;
+    width: 334pt;
+    height: 50pt;
     cursor: pointer;
     margin: 10px;
   }

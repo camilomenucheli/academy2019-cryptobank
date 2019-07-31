@@ -11,6 +11,9 @@ firestore.settings(settings)
 exports.on_create_user = functions.auth.user().onCreate((user) => {
   const { uid, email, displayName } = user
   const balance = 0.0
-
-  return firestore.doc(`users/${uid}`).set({ uid, email, displayName, balance })
+  const contacts = []
+  firestore.doc(`motionHistory/${uid}`).set( { uid })
+  return firestore.doc(`users/${uid}`).set({ uid, email, displayName, balance, contacts }) 
+  
+  
 });

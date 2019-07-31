@@ -18,12 +18,27 @@
         <p v-if="!verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
         <br>
         <div class="actions">
+          <button type="navigate" class="center" @click="add10">
+            +10
+          </button>
+          <button type="navigate" class="center" @click="add500">
+            +500
+          </button>
+          <button type="navigate" class="center" @click="add1000">
+            +1000
+          </button>
+          <button type="navigate" class="center" @click="add5000">
+            +5000
+          </button>
+        </div><br>
+        <div class="actions">
           <button type="submit" class="center">
             Depositar
           </button>
         </div>
-
       </form>
+      <div>
+      </div>
   </div>
 </template>
 
@@ -58,11 +73,55 @@ export default {
         firebase.firestore().doc(`users/${uid}`).update({
           balance: firebase.firestore.FieldValue.increment(this.value)
         })
+        const docId = firebase.firestore().collection('movement').doc().id
+
+        firebase.firestore()
+          .collection('movement')
+          .doc(docId).set(
+            { id: docId,
+              uid,
+              type: 'deposit',
+              value: this.value,
+              createOn: new Date()
+            })
+          // .then(() => {
+          //   alert('Post criado com sucesso!')
+          //   this.$router.push('/feed')
+          // }).catch(error => {
+          //   alert('Erro ao criar post! \n\n' + error)
+          // })
+        // console.log(this.value)
+        // firebase.firestore()
+        //   .collection('movement').doc(uid).collection('mov')
+        //   .add({
+        //     uid,
+        //     type: 'deposit',
+        //     value: this.value,
+        //     createOn: new Date()
+        //   })
+        alert('Deposito efetuado com sucesso')
+        this.value = null
       }
     },
 
+    add10 () {
+      this.value += 10.00
+    },
+
+    add500 () {
+      this.value += 500.00
+    },
+
+    add1000 () {
+      this.value += 1000.00
+    },
+
+    add5000 () {
+      this.value += 5000.00
+    },
+
     handleHome () {
-      this.value = 0.00
+      this.value = null
       this.$router.push({ path: '/home' })
     }
   }

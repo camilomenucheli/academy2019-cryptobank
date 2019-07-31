@@ -6,6 +6,9 @@
     <div class="wrapper-logo">
       <img class="logo" :src="require('../assets/logo.svg')" alt="Logo"/>
     </div>
+    <div class="action action-right">
+      <slot name="action-right" />
+    </div>
   </header>
 </template>
 
@@ -23,10 +26,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
 }
 .logo {
-  width: 300px;
+  width: 334pt;
+  height: 104pt;
   margin: auto;
   display: block;
 }
@@ -39,5 +42,6 @@ export default {
 }
 .wrapper-logo {
   flex: 1;
+  margin: 5px;
 }
 </style>
