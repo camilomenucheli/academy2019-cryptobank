@@ -8,7 +8,7 @@
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-     <form class="login-form" @submit.prevent="submitDeposit">
+     <form class="deposit-form" @submit.prevent="submitDeposit">
         <div class="input-control">
           <label for="value-input">Informe a quantia desejada</label>
           <br>
@@ -76,5 +76,23 @@ export default {
     width: 100%;
     height: 100%;
     color: #fff;
+  }
+
+  .deposit > .content {
+    width: 320px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+
+  .deposit-form > .actions > button[type="submit"] {
+    background-color: #FA7268;
+    border: 0;
+    border-radius: 100px;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 18px;
+    width: 300px;
+    height: 48px;
+    cursor: pointer;
   }
 </style>

@@ -18,14 +18,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .header {
-  background: #FA7268;
+  background: #333333;
   padding: .4em .4em;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
 }
 .logo {
-  width: 200px;
+  width: 300px;
   margin: auto;
   display: block;
 }

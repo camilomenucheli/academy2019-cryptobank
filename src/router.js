@@ -22,31 +22,38 @@ const router = new Router({
       name: 'home',
       component: Home,
       meta: {
-        requiresAuth: true
+        requiresAuth: true, title: 'Home'
       }
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
+      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
+      meta: {
+        title: 'Login'
+      }
     },
     {
       path: '/create_account',
       name: 'create_account',
-      component: () => import(/* webpackChunkName: "create_account" */ './views/CreateAccount.vue')
+      component: () => import(/* webpackChunkName: "create_account" */ './views/CreateAccount.vue'),
+      meta: {
+        title: 'Criar conta'
+      }
     },
     {
       path: '/deposit',
       name: 'deposit',
       component: () => import(/* webpackChunkName: "deposit" */ './views/Deposit.vue'),
       meta: {
-        requiresAuth: true
+        requiresAuth: true, title: 'Depositar'
       }
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title} - Sarakin`
   const currentUser = firebase.auth().currentUser
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
