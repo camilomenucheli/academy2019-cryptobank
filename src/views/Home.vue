@@ -50,7 +50,7 @@ export default {
     },
 
     handlePay () {
-      this.$router.push({ path: '/deposit' })
+      this.$router.push({ path: '/pay' })
     },
 
     handleTransfer () {

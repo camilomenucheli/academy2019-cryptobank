@@ -12,7 +12,7 @@
         <div class="input-control">
           <label for="value-input">Informe a quantia desejada</label>
           <br>
-          <input v-model="value" type="value" id="value-input" required name="value" class="input" placeholder="$KA 0,00">
+          <input v-model.number="value" type="number" id="value-input" required name="value" class="input" placeholder="$KA 0,00">
         </div>
         <p v-if="!verifyOk1">Por favor digite um valor acima de $KA10,00</p>
         <p v-if="!verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
@@ -54,8 +54,10 @@ export default {
       } else {
         this.verifyOk1 = true
         this.verifyOk2 = true
-        // firebase.firestore()
-        //   .collection('users')
+
+        firebase.firestore().doc(`users/${uid}`).update({
+          balance: firebase.firestore.FieldValue.increment(this.value)
+        })
       }
     },
 
