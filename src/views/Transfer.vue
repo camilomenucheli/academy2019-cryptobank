@@ -8,10 +8,10 @@
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-    <!-- <label for="from-input">Para quem você deseja enviar?</label>
-          <br>
-          <input v-model="benefited" type="text" id="from-input" required name="from" class="input" placeholder="fulano@email.com"> -->
-        <button type="action" @click="buscar">buscar user</button>
+    <label for="from-input">Para quem você deseja enviar?</label>
+    <br>
+    <input v-model="recipient" type="text" id="from-input" required name="from" class="input" placeholder="fulano@email.com">
+    <button type="action" @click="buscar">buscar user</button>
      <form class="transfer-form" @submit.prevent="submitTransfer">
         <div class="input-control">
           <label for="value-input">Informe a quantia desejada</label>
@@ -45,7 +45,7 @@ export default {
     verifyOk3: false,
     value: null,
     balance: null,
-    benefited: ''
+    recipient: ''
   }),
   components: {
     Header
@@ -53,21 +53,25 @@ export default {
 
   methods: {
     buscar () {
-      firebase.firestore().collection('users')
-        .where('email', '==', "camilomenuch@gmail.com").get()
-        .then(doc => {
-          if (!doc.exists) {
-            console.log('No such document!')
-            alert('user não encontrado')
-          } else {
-            console.log('usuario beneficiado antes da busca ' + this.benefited)
+      // firebase.firestore().collection('users')
+      //   .where('email', '==', this.recipient).get()
+      //   .onSnapshot(snapshot => {
+      //     snapshot.forEach(doc => {
+      //       console.log(doc.id + '=>' + doc.data())
+      //     })  
+      //   })
+          // if (!doc.exists) {
+          //   console.log('No such document!')
+          //   alert('user não encontrado')
+          // } else {
+          //   console.log('usuario beneficiado antes da busca ' + this.benefited)
 
-            this.benefited = doc.data().uid
+          //   this.benefited = doc.data().uid
 
-            console.log('usuario beneficiado antes da busca ' + this.benefited)
-            alert('user encontrado')
-          }
-        })
+          //   console.log('usuario beneficiado antes da busca ' + this.benefited)
+          //   alert('user encontrado')
+          // }
+        
     },
 
     submitTransfer () {
@@ -111,7 +115,7 @@ export default {
                   .doc(docId).set(
                     { id: docId,
                       uid,
-                      type: 'pay',
+                      type: 'transfer',
                       value: this.value,
                       createOn: new Date()
                     })

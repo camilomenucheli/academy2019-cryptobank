@@ -16,6 +16,14 @@
       <p>Saldo disponível</p>
       <p>$KA {{this.balance}}</p>
     </div>
+    <div class="balance">
+      <p>ultimas transferencias:</p>
+      <li v-for="statement in statements" :key="statement.id">
+        <p> Tipo = {{statement.type}}</p>
+        <p> Valor = $KA{{statement.value}}</p>
+        <p> Data = {{statement.createOn}}</p>
+      </li>
+    </div>
     <div class="actions">
       <button type="navigate" id="deposit-button" class="center" @click="handleDeposit">
         Depositar
@@ -39,7 +47,8 @@ export default {
   data () {
     return {
       balance: null,
-      user: ''
+      user: '',
+      statements: []
     }
   },
   components: {
@@ -58,6 +67,16 @@ export default {
       })
       .catch(err => {
         console.log('Error getting document', err)
+      })
+    firebase.firestore().collection('cryptoStatement')
+      .where('uid', '==', uid)
+      .then(snapshot => {
+        snapshot.docs.map(doc => {
+          console.log(this.statements)
+          this.statements.push(doc.data())
+        })
+      }).catch(error => {
+        throw new Error(error)
       })
     // balanceSnapshotListener = firebase.firestore().collection('posts')
     //   .where('userUid', '==', userUid)

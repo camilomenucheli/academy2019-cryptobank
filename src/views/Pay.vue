@@ -75,9 +75,9 @@ export default {
                 firebase.firestore().doc(`users/${uid}`).update({
                   balance: firebase.firestore.FieldValue.increment(-this.value)
                 })
-                const docId = firebase.firestore().collection('movement').doc().id
+                const docId = firebase.firestore().collection('cryptoStatement').doc().id
                 firebase.firestore()
-                  .collection('movement')
+                  .collection('cryptoStatement')
                   .doc(docId).set(
                     { id: docId,
                       uid,
