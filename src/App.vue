@@ -13,6 +13,8 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap');
+
 html,body{
   height: 100%;
   margin: 0;
@@ -21,7 +23,7 @@ html,body{
 #app {
   height: 100%;
   text-align: center;
-  color: #2c3e50;
+  font-family: 'Roboto', sans-serif;
 }
 
 #app a {

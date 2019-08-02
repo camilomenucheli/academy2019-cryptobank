@@ -2,7 +2,6 @@
   <div class="login">
     <div class="content center">
       <img class="logo" :src="require('../assets/logo.svg')" alt="Logo"/>
-
       <form class="login-form" @submit.prevent="submitLogin">
         <div class="input-control">
           <label for="email-input">E-mail</label>
@@ -95,10 +94,8 @@ export default {
     border-radius: 10px;
     border-width: 0;
     background: #FFF;
-
     font-family: 'Roboto';
     font-size: 15px;
-
     padding: 0 25px;
   }
 

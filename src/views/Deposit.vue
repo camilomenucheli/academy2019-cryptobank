@@ -1,44 +1,57 @@
 <template>
   <div class="deposit">
     <Header>
-      <div slot="action-left" class="icon-button" tag="button" @click="handleHome">
-        Voltar
-      </div>
       <div>
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-     <form class="deposit-form" @submit.prevent="submitDeposit">
-        <div class="input-control">
-          <label for="value-input">Informe a quantia desejada</label>
-          <br>
-          <input v-model.number="value" type="number" id="value-input" required name="value" class="input" placeholder="$KA 0,00">
-        </div>
-        <p v-if="!verifyOk1">Por favor digite um valor acima de $KA10,00</p>
-        <p v-if="!verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
-        <br>
-        <div class="actions">
-          <button type="navigate" class="center" @click="add10">
-            +10
-          </button>
-          <button type="navigate" class="center" @click="add500">
-            +500
-          </button>
-          <button type="navigate" class="center" @click="add1000">
-            +1000
-          </button>
-          <button type="navigate" class="center" @click="add5000">
-            +5000
-          </button>
-        </div><br>
-        <div class="actions">
-          <button type="submit" class="center">
-            Depositar
-          </button>
-        </div>
-      </form>
-      <div>
+    <div class="content center">
+      <div id="back">
+        <img
+          src="../assets/left-arrow.svg"
+          alt="btnBack"
+          class="btnBack"
+          @click="handleHome">
+        <b class="text">Deposito</b>
+        <form class="deposit-form" @submit.prevent="submitDeposit">
+          <div class="input-control">
+            <br>
+            <label for="value-input">Informe a <b>quantia</b> desejada</label>
+            <br>
+            <input
+              autofocus
+              v-model.number="value"
+              type="number"
+              id="value-input"
+              required
+              name="value"
+              class="input"
+              placeholder="$KA 0,00">
+          </div>
+          <p v-if="!verifyOk1">Por favor digite um valor acima de $KA10,00</p>
+          <p v-if="!verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
+          <div class="actions">
+            <b type="navigate" class="btn" @click="add10">
+              +10
+            </b>
+            <b type="navigate" class="btn" @click="add500">
+              +500
+            </b>
+            <b type="navigate" class="btn" @click="add1000">
+              +1000
+            </b>
+            <b type="navigate" class="btn" @click="add5000">
+              +5000
+            </b>
+          </div><br>
+          <div class="actions">
+            <button type="submit" class="center">
+              Depositar
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
   </div>
 </template>
 
@@ -69,35 +82,17 @@ export default {
       } else {
         this.verifyOk1 = true
         this.verifyOk2 = true
-
         firebase.firestore().doc(`users/${uid}`).update({
           balance: firebase.firestore.FieldValue.increment(this.value)
         })
-        const docId = firebase.firestore().collection('cryptoStatement').doc().id
-        firebase.firestore()
-          .collection('cryptoStatement')
-          .doc(docId).set(
-            { id: docId,
-              uid,
-              type: 'deposit',
-              value: this.value,
-              createOn: new Date()
-            })
-          // .then(() => {
-          //   alert('Post criado com sucesso!')
-          //   this.$router.push('/feed')
-          // }).catch(error => {
-          //   alert('Erro ao criar post! \n\n' + error)
-          // })
-        // console.log(this.value)
-        // firebase.firestore()
-        //   .collection('movement').doc(uid).collection('mov')
-        //   .add({
-        //     uid,
-        //     type: 'deposit',
-        //     value: this.value,
-        //     createOn: new Date()
-        //   })
+        const statement = {
+          type: 'Deposito',
+          value: this.value,
+          createAt: new Date()
+        }
+        firebase.firestore().doc(`cryptoStatement/${uid}`).update({
+          statement: firebase.firestore.FieldValue.arrayUnion(statement)
+        })
         alert('Deposito efetuado com sucesso')
         this.value = null
       }
@@ -135,24 +130,91 @@ export default {
     background-size: cover;
     width: 100%;
     height: 100%;
-    color: #fff;
   }
 
   .deposit > .content {
-    width: 320px;
+    width: 334pt;
     margin-top: 60px;
     margin-bottom: 60px;
+    max-width: 90%;
+  }
+
+  #back {
+    background-color: #4076AD;
+    text-align: left;
+    margin-bottom: 20px;
+    border-radius: 1em;
+    display: block;
+    padding-top: .4em;
+    text-align: center;
+  }
+
+  #back > .text {
+    color: #fff;
+    padding: 0em .4em;
+  }
+
+  #back > .btnBack {
+    cursor: pointer;
+  }
+
+  .center {
+    margin: auto;
+  }
+
+  .deposit-form {
+    display: block;
+    background-color: #FFF;
+    border-radius: 1em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 2pt;
+  }
+
+  .input-control {
+    margin-bottom: 2px;
+  }
+
+  .input-control > label {
+    display: block;
+    color: #000;
+    font-size: 20px;
+  }
+
+  .btn {
+    justify-content: center;
+    margin: 0 10pt;
+    color: #333333;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .input-control > .input {
+    height: 75px;
+    width: 215pt;
+    border-width: 0;
+    background: #fff;
+    font-family: 'Roboto';
+    font-size: 50px;
+    padding: 0 25px;
+    color: #333333;
+    text-align: center;
+  }
+
+  .input-control > .input:focus {
+    background: #F2F2F2;
   }
 
   .deposit-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 100px;
+    border-radius: 1em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;
-    width: 300px;
-    height: 48px;
+    width: 100%;
+    height: 50pt;
     cursor: pointer;
   }
 </style>

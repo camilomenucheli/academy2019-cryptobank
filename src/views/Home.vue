@@ -1,37 +1,60 @@
 <template>
   <div class="home">
     <Header>
-      <div slot="action-left" class="icon-button" tag="button" @click="signOut">
-        Sair
-      </div>
       <div>
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
-      <div slot="action-right" class="icon-button" tag="button" @click="signOut">
-        Sair
-      </div>
     </Header>
     <h3>Bem vindo, {{this.user}}</h3>
+    <span @click="signOut">
+        Sair
+    </span>
     <div class="balance">
       <p>Saldo disponível</p>
-      <p>$KA {{this.balance}}</p>
+      <p id="balance">$KA {{this.balance}}</p>
     </div>
-    <div class="balance">
-      <p>ultimas transferencias:</p>
-      <li v-for="statement in statements" :key="statement.id">
-        <p> Tipo = {{statement.type}}</p>
-        <p> Valor = $KA{{statement.value}}</p>
-        <p> Data = {{statement.createOn}}</p>
-      </li>
+    <div v-if="!statements.length"
+      class="statement">
+      <br>
+      <p>Você ainda não possui lançamentos!</p>
+      <p>Realize um deposito agora mesmo!</p>
+      <br>
+    </div>
+    <div v-else
+      class="statement">
+      <p>Últimos movimentos</p>
+      <div
+        id="statement"
+        v-for="statement in statements"
+        v-bind:key="statement.id">
+        <div v-if="statement.type === 'Transferência'">
+          <br>
+          Data = {{statement.createAt}} <br>
+          Tipo = {{statement.type}} -
+          Valor = $KA {{statement.value}}<br>
+          Para = {{statement.recipient}}
+          <br>
+        </div>
+        <div v-else>
+          <br>
+          Data = {{statement.createAt}} <br>
+          Tipo = {{statement.type}} -
+          Valor = $KA {{statement.value}}
+          <br>
+        </div>
+      </div>
     </div>
     <div class="actions">
       <button type="navigate" id="deposit-button" class="center" @click="handleDeposit">
+        <img class="ico" src="../assets/piggy-bank.svg" alt="deposit-ico">
         Depositar
       </button><br>
       <button type="navigate" id="pay-button" class="center" @click="handlePay">
+        <img class="ico" src="../assets/pay.svg" alt="deposit-ico">
         Pagar
       </button><br>
       <button type="navigate" id="transfer-button" class="center" @click="handleTransfer">
+        <img class="ico" src="../assets/surface1.svg" alt="deposit-ico">
         Transferir
       </button><br>
     </div>
@@ -68,41 +91,19 @@ export default {
       .catch(err => {
         console.log('Error getting document', err)
       })
-    firebase.firestore().collection('cryptoStatement')
-      .where('uid', '==', uid)
-      .then(snapshot => {
-        snapshot.docs.map(doc => {
-          console.log(this.statements)
-          this.statements.push(doc.data())
-        })
+    firebase.firestore().doc(`cryptoStatement/${uid}`).get()
+      .then(doc => {
+        if (!doc.exists) {
+          console.log('No such document!')
+        } else {
+          this.statements = doc.data().statement.reverse()
+          for (var i = 0; i < this.statements.length; i++) {
+            this.statements[i].createAt = this.statements[i].createAt.toDate().toLocaleString('pt-BR')
+          }
+        }
       }).catch(error => {
         throw new Error(error)
       })
-    // balanceSnapshotListener = firebase.firestore().collection('posts')
-    //   .where('userUid', '==', userUid)
-    //   .onSnapshot(snapshot => {
-    //     snapshot.docChanges().forEach(change => {
-    //       if (change.type === 'added') {
-    //         this.posts.push(change.doc.data())
-    //       }
-
-    //       if (change.type === 'modified') {
-    //         const { id } = change.doc.data()
-    //         const currentObject = this.posts.filter(post => post.id === id)[0]
-
-    //         this.posts[this.posts.indexOf(currentObject)] = change.doc.data()
-    //         this.$forceUpdate()
-    //       }
-
-    //       if (change.type === 'removed') {
-    //         const { id } = change.doc.data()
-    //         const currentObject = this.posts.filter(post => post.id === id)[0]
-
-    //         this.posts.splice(this.posts.indexOf(currentObject), 1)
-    //         this.$forceUpdate()
-    //       }
-    //     })
-    //   })
   },
 
   methods: {
@@ -144,13 +145,34 @@ export default {
   .home > .balance {
     background-color: #fff;
     width: 334pt;
-    height: 104pt;
+    color: #333333;
+    margin: 1em auto;
+    border-radius: 5pt;
+    padding-top: 1pt;
+    padding-left: 10pt;
+    text-align: left;
+    overflow: auto;
+    max-width: 90%;
+  }
+
+  .home > .balance > #balance {
+    margin-top: -20px;
+    margin-bottom: -5px;
+    font-size: 50px;
+  }
+
+  .home > .statement {
+    background-color: #fff;
+    width: 334pt;
     color: #000;
     margin: 1em auto;
     border-radius: 5pt;
-    padding-top: 10pt;
+    padding-top: 1pt;
     padding-left: 10pt;
-    text-align: left
+    text-align: left;
+    overflow: auto;
+    max-width: 90%;
+    max-height: 25%;
   }
 
   .home > .actions > button[type="navigate"] {
@@ -164,5 +186,11 @@ export default {
     height: 50pt;
     cursor: pointer;
     margin: 10px;
+    max-width: 100%;
   }
+
+  span {
+    cursor: pointer;
+  }
+
 </style>

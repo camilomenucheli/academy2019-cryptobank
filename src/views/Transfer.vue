@@ -8,28 +8,77 @@
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-    <label for="from-input">Para quem você deseja enviar?</label>
-    <br>
-    <input v-model="recipient" type="text" id="from-input" required name="from" class="input" placeholder="fulano@email.com">
-    <button type="action" @click="buscar">buscar user</button>
-     <form class="transfer-form" @submit.prevent="submitTransfer">
-        <div class="input-control">
-          <label for="value-input">Informe a quantia desejada</label>
-          <br>
-          <input v-model.number="value" type="number" id="value-input" required name="value" class="input" placeholder="$KA 0,00">
-          <br>
-        </div>
-        <p v-if="verifyOk1">Por favor digite um valor acima de $KA10,00</p>
-        <p v-if="verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
-        <p v-if="verifyOk3">Saldo insuficiente para realizar operação</p>
-        <br>
-        <div class="actions">
-          <button type="submit" class="center">
-            Pagar
-          </button>
-        </div>
-
-      </form>
+    <div class="content center">
+      <div id="back">
+        <img
+          src="../assets/left-arrow.svg"
+          alt="btnBack"
+          class="btnBack"
+          @click="handleHome">
+        <b class="text">Transferência</b>
+        <form class="transfer-form" @submit.prevent="submitTransfer">
+          <div class="input-control">
+            <br>
+            <label for="from-input">Para <b>quem</b> você deseja enviar?</label>
+            <input
+              autofocus
+              v-model="recipient"
+              type="text"
+              id="from-input"
+              required
+              name="from"
+              class="input"
+              placeholder="fulano@email.com">
+            <br>
+            <br>
+            <input type="checkbox" v-model="saveContact">
+            <label for="">Salvar usuário como contato</label>
+            <br>
+            <br>
+            <label for="">Contatos: </label>
+            <select
+              v-model="recipient"
+              class="contacts">
+              <option v-for="contact in contacts" :key="contact">{{ contact }}</option>
+            </select>
+            <br>
+            <br>
+            <label for="value-input">Informe a <b>quantia</b> desejada</label>
+            <input
+              v-model.number="value"
+              type="number" id="value-input"
+              required
+              name="value"
+              class="input"
+              placeholder="$KA 0,00">
+            <br>
+          </div>
+          <b class="alert" v-if="verifyOk1">Por favor digite um valor acima de $KA10,00</b>
+          <b class="alert" v-if="verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</b>
+          <b class="alert" v-if="verifyOk3">Saldo insuficiente para realizar operação</b>
+          <br><br>
+          <div class="actions">
+            <b type="navigate" class="btn" @click="add10">
+              +10
+            </b>
+            <b type="navigate" class="btn" @click="add500">
+              +500
+            </b>
+            <b type="navigate" class="btn" @click="add1000">
+              +1000
+            </b>
+            <b type="navigate" class="btn" @click="add5000">
+              +5000
+            </b>
+          </div><br>
+          <div class="actions">
+            <button type="submit" class="center">
+              Transferir
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -45,94 +94,128 @@ export default {
     verifyOk3: false,
     value: null,
     balance: null,
-    recipient: ''
+    recipient: '',
+    rUid: null,
+    saveContact: false,
+    contacts: []
   }),
   components: {
     Header
   },
 
+  mounted () {
+    const uid = firebase.auth().currentUser.uid
+    firebase.firestore().doc(`users/${uid}`).get()
+      .then(doc => {
+        if (!doc.exists) {
+          alert('ERROR')
+        } else {
+          this.contacts = doc.data().contacts
+        }
+      })
+  },
+
   methods: {
-    buscar () {
-      // firebase.firestore().collection('users')
-      //   .where('email', '==', this.recipient).get()
-      //   .onSnapshot(snapshot => {
-      //     snapshot.forEach(doc => {
-      //       console.log(doc.id + '=>' + doc.data())
-      //     })  
-      //   })
-          // if (!doc.exists) {
-          //   console.log('No such document!')
-          //   alert('user não encontrado')
-          // } else {
-          //   console.log('usuario beneficiado antes da busca ' + this.benefited)
-
-          //   this.benefited = doc.data().uid
-
-          //   console.log('usuario beneficiado antes da busca ' + this.benefited)
-          //   alert('user encontrado')
-          // }
-        
-    },
-
-    submitTransfer () {
+    async submitTransfer () {
       const uid = firebase.auth().currentUser.uid
-      console.log('teste ' + this.balance)
-      console.log('teste 2 ' + this.benefited)
-      if (this.value < 10) {
-        this.verifyOk1 = true
-        this.verifyOk2 = false
-        this.verifyOk2 = false
-      } else if (this.value > 15000) {
-        this.verifyOk1 = false
-        this.verifyOk2 = true
-        this.verifyOk3 = false
-      } else {
-        firebase.firestore().doc(`users/${uid}`).get()
-          .then(doc => {
+      await firebase.firestore().collection('users')
+        .where('email', '==', this.recipient).get()
+        .then(snapshot => {
+          snapshot.docs.map(doc => {
             if (!doc.exists) {
-              console.log('No such document!')
+              alert('Usuario destino não encontrado')
+              this.rUid = null
             } else {
-              this.balance = doc.data().balance
-              if (this.balance < this.value) {
-                this.verifyOk1 = false
-                this.verifyOk2 = false
-                this.verifyOk3 = true
-              } else {
-                this.verifyOk1 = false
-                this.verifyOk2 = false
-                this.verifyOk3 = false
-                firebase.firestore().doc(`users/${uid}`).update({
-                  balance: firebase.firestore.FieldValue.increment(-this.value)
-                })
-                // firebase.firestore().doc(`users/${benefitedUid}`).update({
-                //   balance: firebase.firestore.FieldValue.increment(this.value)
-                // })
-
-                // SALVANDO HISTORICO DE MOVIMENTAÇÃO
-                const docId = firebase.firestore().collection('movement').doc().id
-                firebase.firestore()
-                  .collection('movement')
-                  .doc(docId).set(
-                    { id: docId,
-                      uid,
-                      type: 'transfer',
-                      value: this.value,
-                      createOn: new Date()
-                    })
-                alert('Deposito efetuado com sucesso')
-              }
-              console.log('dentro do doc => ' + this.balance)
+              this.rUid = (doc.data().uid)
             }
           })
-          .catch(err => {
-            console.log('Error getting document', err)
+        })
+      if (!this.rUid) {
+        alert('Usuário destino não encontrado')
+        this.recipient = ''
+      } else if (uid === this.rUid) {
+        alert('Impossível transferir para sua própria conta')
+        this.recipient = ''
+      } else {
+        if (this.saveContact) {
+          firebase.firestore().doc(`users/${uid}`).update({
+            contacts: firebase.firestore.FieldValue.arrayUnion(this.recipient)
           })
+        }
+        if (this.value < 10) {
+          this.verifyOk1 = true
+          this.verifyOk2 = false
+          this.verifyOk3 = false
+        } else if (this.value > 15000) {
+          this.verifyOk1 = false
+          this.verifyOk2 = true
+          this.verifyOk3 = false
+        } else {
+          await firebase.firestore().doc(`users/${uid}`).get()
+            .then(doc => {
+              if (!doc.exists) {
+                alert('ERROR')
+              } else {
+                this.balance = doc.data().balance
+                if (this.balance < this.value) {
+                  this.verifyOk1 = false
+                  this.verifyOk2 = false
+                  this.verifyOk3 = true
+                } else {
+                  this.verifyOk1 = false
+                  this.verifyOk2 = false
+                  this.verifyOk3 = false
+                  firebase.firestore().doc(`users/${uid}`).update({
+                    balance: firebase.firestore.FieldValue.increment(-this.value)
+                  })
+                  firebase.firestore().doc(`users/${this.rUid}`).update({
+                    balance: firebase.firestore.FieldValue.increment(this.value)
+                  })
+
+                  // SALVANDO HISTORICO DE MOVIMENTAÇÃO
+                  const statement = {
+                    type: 'Transferência',
+                    value: this.value,
+                    createAt: new Date(),
+                    recipientUid: this.rUid,
+                    recipient: this.recipient
+                  }
+                  firebase.firestore().doc(`cryptoStatement/${uid}`).update({
+                    statement: firebase.firestore.FieldValue.arrayUnion(statement)
+                  })
+                  alert('Transferência efetuada com sucesso')
+                  this.$forceUpdate()
+                }
+              }
+            })
+            .catch(err => {
+              console.log('Error getting document', err)
+            })
+        }
       }
+    },
+
+    add10 () {
+      this.value += 10.00
+    },
+
+    add500 () {
+      this.value += 500.00
+    },
+
+    add1000 () {
+      this.value += 1000.00
+    },
+
+    add5000 () {
+      this.value += 5000.00
     },
 
     handleHome () {
       this.value = null
       this.balance = null
+      this.recipient = ''
+      this.rUid = null
       this.$router.push({ path: '/home' })
     }
   }
@@ -147,24 +230,106 @@ export default {
     background-size: cover;
     width: 100%;
     height: 100%;
-    color: #fff;
   }
 
   .transfer > .content {
-    width: 320px;
+    width: 334pt;
     margin-top: 60px;
     margin-bottom: 60px;
+    max-width: 90%;
+  }
+
+  #back {
+    background-color: #4076AD;
+    text-align: left;
+    margin-bottom: 20px;
+    border-radius: 1em;
+    display: block;
+    padding-top: .4em;
+    text-align: center;
+  }
+
+  #back > .text {
+    color: #fff;
+    padding: 0em .4em;
+  }
+
+  #back > .btnBack {
+    cursor: pointer;
+  }
+
+  .center {
+    margin: auto;
+  }
+
+  .transfer-form {
+    display: block;
+    background-color: #FFF;
+    border-radius: 1em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 2pt;
+  }
+
+  .transfer-form > .alert {
+    color: #FA7268
+  }
+
+  .input-control {
+    margin-bottom: 2px;
+  }
+
+  .input-control > label {
+    display: block;
+    color: #000;
+    font-size: 20px;
+  }
+
+  .btn {
+    justify-content: center;
+    margin: 0 10pt;
+    color: #333333;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .input-control > .input {
+    height: 75px;
+    width: 334pt;
+    border-width: 0;
+    background: #fff;
+    font-family: 'Roboto';
+    font-size: 50px;
+    padding: 0 25px;
+    color: #333333;
+    text-align: center;
+    max-width: 85%;
+  }
+
+  #from-input {
+    height: 50px;
+    font-size: 20px;
+  }
+
+
+  .input-control > .input:focus {
+    background: #F2F2F2;
+  }
+
+  .input-control > input[type="checkbox"]{
+    float: none;
   }
 
   .transfer-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 100px;
+    border-radius: 1em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;
-    width: 300px;
-    height: 48px;
+    width: 100%;
+    height: 50pt;
     cursor: pointer;
   }
 </style>

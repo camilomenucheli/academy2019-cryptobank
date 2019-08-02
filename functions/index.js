@@ -12,8 +12,8 @@ exports.on_create_user = functions.auth.user().onCreate((user) => {
   const { uid, email, displayName } = user
   const balance = 0.0
   const contacts = []
-  firestore.doc(`motionHistory/${uid}`).set( { uid })
-  return firestore.doc(`users/${uid}`).set({ uid, email, displayName, balance, contacts }) 
+  const statement = []
   
-  
+  firestore.doc(`cryptoStatement/${uid}`).set({ uid, email, statement })
+  return firestore.doc(`users/${uid}`).set({ uid, email, displayName, balance, contacts })
 });

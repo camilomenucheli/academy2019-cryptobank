@@ -32,6 +32,7 @@ export default {
   height: 104pt;
   margin: auto;
   display: block;
+  max-width: 100%;
 }
 .action {
   width: 40px;

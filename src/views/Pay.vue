@@ -1,30 +1,58 @@
 <template>
   <div class="pay">
     <Header>
-      <div slot="action-left" class="icon-button" tag="button" @click="handleHome">
-        Voltar
-      </div>
       <div>
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-     <form class="pay-form" @submit.prevent="submitPay">
-        <div class="input-control">
-          <label for="value-input">Informe a quantia desejada</label>
-          <br>
-          <input v-model.number="value" type="number" id="value-input" required name="value" class="input" placeholder="$KA 0,00">
-        </div>
-        <p v-if="verifyOk1">Por favor digite um valor acima de $KA10,00</p>
-        <p v-if="verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
-        <p v-if="verifyOk3">Saldo insuficiente para realizar operação</p>
-        <br>
-        <div class="actions">
-          <button type="submit" class="center">
-            Pagar
-          </button>
-        </div>
-
-      </form>
+    <div class="content center">
+      <div id="back">
+        <img
+          src="../assets/left-arrow.svg"
+          alt="btnBack"
+          class="btnBack"
+          @click="handleHome">
+        <b class="text">Pagamento</b>
+        <form class="pay-form" @submit.prevent="submitPay">
+          <div class="input-control">
+            <br>
+            <label for="value-input">Informe a <b>quantia</b> desejada</label>
+            <br>
+            <input
+              autofocus
+              v-model.number="value"
+              type="number"
+              id="value-input"
+              required
+              name="value"
+              class="input"
+              placeholder="$KA 0,00">
+          </div>
+          <p v-if="verifyOk1">Por favor digite um valor acima de $KA10,00</p>
+          <p v-if="verifyOk2">Por favor digite um valor abaixo de $KA15.000,00</p>
+          <p v-if="verifyOk3">Saldo insuficiente para realizar operação</p>
+          <div class="actions">
+            <b type="navigate" class="btn" @click="add10">
+              +10
+            </b>
+            <b type="navigate" class="btn" @click="add500">
+              +500
+            </b>
+            <b type="navigate" class="btn" @click="add1000">
+              +1000
+            </b>
+            <b type="navigate" class="btn" @click="add5000">
+              +5000
+            </b>
+          </div><br>
+          <div class="actions">
+            <button type="submit" class="center">
+              Pagar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,7 +76,6 @@ export default {
   methods: {
     submitPay () {
       const uid = firebase.auth().currentUser.uid
-      console.log('teste ' + this.balance)
       if (this.value < 10) {
         this.verifyOk1 = true
         this.verifyOk2 = false
@@ -75,24 +102,38 @@ export default {
                 firebase.firestore().doc(`users/${uid}`).update({
                   balance: firebase.firestore.FieldValue.increment(-this.value)
                 })
-                const docId = firebase.firestore().collection('cryptoStatement').doc().id
-                firebase.firestore()
-                  .collection('cryptoStatement')
-                  .doc(docId).set(
-                    { id: docId,
-                      uid,
-                      type: 'pay',
-                      value: this.value,
-                      createOn: new Date()
-                    })
+                const statement = {
+                  type: 'Pagamento',
+                  value: this.value,
+                  createAt: new Date()
+                }
+                firebase.firestore().doc(`cryptoStatement/${uid}`).update({
+                  statement: firebase.firestore.FieldValue.arrayUnion(statement)
+                })
+                alert('Pagamento realizado com sucesso!')
               }
-              console.log('dentro do doc => ' + this.balance)
             }
           })
           .catch(err => {
             console.log('Error getting document', err)
           })
       }
+    },
+
+    add10 () {
+      this.value += 10.00
+    },
+
+    add500 () {
+      this.value += 500.00
+    },
+
+    add1000 () {
+      this.value += 1000.00
+    },
+
+    add5000 () {
+      this.value += 5000.00
     },
 
     handleHome () {
@@ -112,24 +153,91 @@ export default {
     background-size: cover;
     width: 100%;
     height: 100%;
-    color: #fff;
   }
 
   .pay > .content {
-    width: 320px;
+    width: 334pt;
     margin-top: 60px;
     margin-bottom: 60px;
+    max-width: 90%;
+  }
+
+  #back {
+    background-color: #4076AD;
+    text-align: left;
+    margin-bottom: 20px;
+    border-radius: 1em;
+    display: block;
+    padding-top: .4em;
+    text-align: center;
+  }
+
+  #back > .text {
+    color: #fff;
+    padding: 0em .4em;
+  }
+
+  #back > .btnBack {
+    cursor: pointer;
+  }
+
+  .center {
+    margin: auto;
+  }
+
+  .pay-form {
+    display: block;
+    background-color: #FFF;
+    border-radius: 1em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 2pt;
+  }
+
+  .input-control {
+    margin-bottom: 2px;
+  }
+
+  .input-control > label {
+    display: block;
+    color: #000;
+    font-size: 20px;
+  }
+
+  .btn {
+    justify-content: center;
+    margin: 0 10pt;
+    color: #333333;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .input-control > .input {
+    height: 75px;
+    width: 215pt;
+    border-width: 0;
+    background: #fff;
+    font-family: 'Roboto';
+    font-size: 50px;
+    padding: 0 25px;
+    color: #333333;
+    text-align: center;
+  }
+
+  .input-control > .input:focus {
+    background: #F2F2F2;
   }
 
   .pay-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 100px;
+    border-radius: 1em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;
-    width: 300px;
-    height: 48px;
+    width: 100%;
+    height: 50pt;
     cursor: pointer;
   }
 </style>
