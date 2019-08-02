@@ -12,7 +12,7 @@
           alt="btnBack"
           class="btnBack"
           @click="handleHome">
-        <b class="text">Deposito</b>
+        <b class="text">Depósito</b>
         <form class="deposit-form" @submit.prevent="submitDeposit">
           <div class="input-control">
             <br>
@@ -86,14 +86,14 @@ export default {
           balance: firebase.firestore.FieldValue.increment(this.value)
         })
         const statement = {
-          type: 'Deposito',
+          type: 'Depósito',
           value: this.value,
           createAt: new Date()
         }
         firebase.firestore().doc(`cryptoStatement/${uid}`).update({
           statement: firebase.firestore.FieldValue.arrayUnion(statement)
         })
-        alert('Deposito efetuado com sucesso')
+        alert('Depósito efetuado com sucesso')
         this.value = null
       }
     },
@@ -136,7 +136,7 @@ export default {
     width: 334pt;
     margin-top: 60px;
     margin-bottom: 60px;
-    max-width: 90%;
+    max-width: 95%;
   }
 
   #back {
@@ -151,11 +151,13 @@ export default {
 
   #back > .text {
     color: #fff;
-    padding: 0em .4em;
+    margin-left: -5pt;
   }
 
   #back > .btnBack {
     cursor: pointer;
+    float: left;
+    margin-left: 5pt;
   }
 
   .center {
@@ -209,7 +211,7 @@ export default {
   .deposit-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 1em;
+    border-radius: 0.7em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;

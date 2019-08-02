@@ -5,7 +5,7 @@
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-    <h3>Bem vindo, {{this.user}}</h3>
+    <h3>Olá, {{this.user}}</h3>
     <span @click="signOut">
         Sair
     </span>
@@ -27,12 +27,20 @@
         id="statement"
         v-for="statement in statements"
         v-bind:key="statement.id">
-        <div v-if="statement.type === 'Transferência'">
+        <div v-if="statement.type === 'Transferência enviada'">
           <br>
           Data = {{statement.createAt}} <br>
           Tipo = {{statement.type}} -
           Valor = $KA {{statement.value}}<br>
           Para = {{statement.recipient}}
+          <br>
+        </div>
+        <div v-else-if="statement.type === 'Transferência recebida'">
+          <br>
+          Data = {{statement.createAt}} <br>
+          Tipo = {{statement.type}} -
+          Valor = $KA {{statement.value}}<br>
+          De = {{statement.recipient}}
           <br>
         </div>
         <div v-else>
@@ -50,11 +58,11 @@
         Depositar
       </button><br>
       <button type="navigate" id="pay-button" class="center" @click="handlePay">
-        <img class="ico" src="../assets/pay.svg" alt="deposit-ico">
+        <img class="ico" src="../assets/pay.svg" alt="pay-ico">
         Pagar
       </button><br>
       <button type="navigate" id="transfer-button" class="center" @click="handleTransfer">
-        <img class="ico" src="../assets/surface1.svg" alt="deposit-ico">
+        <img class="ico" src="../assets/surface1.svg" alt="transfer-ico">
         Transferir
       </button><br>
     </div>
@@ -151,12 +159,11 @@ export default {
     padding-top: 1pt;
     padding-left: 10pt;
     text-align: left;
-    overflow: auto;
     max-width: 90%;
   }
 
   .home > .balance > #balance {
-    margin-top: -20px;
+    margin-top: -15px;
     margin-bottom: -5px;
     font-size: 50px;
   }
@@ -178,15 +185,21 @@ export default {
   .home > .actions > button[type="navigate"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 1em;
+    border-radius: 0.7em;
     color: #FFF;
-    font-weight: bold;
-    font-size: 18px;
-    width: 334pt;
+    font-size: 20px;
+    width: 345pt;
     height: 50pt;
     cursor: pointer;
-    margin: 10px;
-    max-width: 100%;
+    max-width: 95%;
+    text-align: right;
+    display: block;
+    margin: 0 auto;
+    padding: 20px 15px;
+  }
+
+  .ico {
+    float: left;
   }
 
   span {

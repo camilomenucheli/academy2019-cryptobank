@@ -1,9 +1,6 @@
 <template>
   <div class="transfer">
     <Header>
-      <div slot="action-left" class="icon-button" tag="button" @click="handleHome">
-        Voltar
-      </div>
       <div>
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
@@ -118,6 +115,7 @@ export default {
   methods: {
     async submitTransfer () {
       const uid = firebase.auth().currentUser.uid
+      const email = firebase.auth().currentUser.email
       await firebase.firestore().collection('users')
         .where('email', '==', this.recipient).get()
         .then(snapshot => {
@@ -174,17 +172,30 @@ export default {
 
                   // SALVANDO HISTORICO DE MOVIMENTAÇÃO
                   const statement = {
-                    type: 'Transferência',
+                    type: 'Transferência enviada',
                     value: this.value,
                     createAt: new Date(),
                     recipientUid: this.rUid,
                     recipient: this.recipient
                   }
+                  console.log(statement)
                   firebase.firestore().doc(`cryptoStatement/${uid}`).update({
                     statement: firebase.firestore.FieldValue.arrayUnion(statement)
                   })
+                  const statement2 = {
+                    type: 'Transferência recebida',
+                    value: this.value,
+                    createAt: new Date(),
+                    recipientUid: uid,
+                    recipient: email
+                  }
+                  console.log(statement2)
+                  firebase.firestore().doc(`cryptoStatement/${this.rUid}`).update({
+                    statement: firebase.firestore.FieldValue.arrayUnion(statement2)
+                  })
                   alert('Transferência efetuada com sucesso')
-                  this.$forceUpdate()
+                  this.value = null
+                  this.recipient = null
                 }
               }
             })
@@ -251,11 +262,13 @@ export default {
 
   #back > .text {
     color: #fff;
-    padding: 0em .4em;
+    margin-left: -5pt;
   }
 
   #back > .btnBack {
     cursor: pointer;
+    float: left;
+    margin-left: 5pt;
   }
 
   .center {
@@ -312,7 +325,6 @@ export default {
     font-size: 20px;
   }
 
-
   .input-control > .input:focus {
     background: #F2F2F2;
   }
@@ -324,7 +336,7 @@ export default {
   .transfer-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 1em;
+    border-radius: 0.7em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;

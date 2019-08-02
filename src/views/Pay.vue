@@ -159,7 +159,7 @@ export default {
     width: 334pt;
     margin-top: 60px;
     margin-bottom: 60px;
-    max-width: 90%;
+    max-width: 95%;
   }
 
   #back {
@@ -174,11 +174,13 @@ export default {
 
   #back > .text {
     color: #fff;
-    padding: 0em .4em;
+    margin-left: -5pt;
   }
 
   #back > .btnBack {
     cursor: pointer;
+    float: left;
+    margin-left: 5pt;
   }
 
   .center {
@@ -232,7 +234,7 @@ export default {
   .pay-form > .actions > button[type="submit"] {
     background-color: #FA7268;
     border: 0;
-    border-radius: 1em;
+    border-radius: 0.7em;
     color: #FFF;
     font-weight: bold;
     font-size: 18px;

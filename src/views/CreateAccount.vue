@@ -4,6 +4,7 @@
       <img class="logo" :src="require('../assets/logo.svg')" alt="Logo"/>
 
       <form class="createaccount-form" @submit.prevent="createAccount">
+
         <div class="input-control">
           <label for="email-input">E-mail</label>
           <input v-model="email" type="email" id="email-input" required name="email" class="input" placeholder="Digite seu e-mail">
@@ -50,7 +51,32 @@ export default {
           alert('Conta criada com sucesso !')
           this.$router.push({ path: '/login' })
         }).catch((error) => {
-          alert('Erro ao criar conta \n\n' + error)
+          var errorCode = error.code
+          var errorMessage = error.message
+          switch (errorCode) {
+            case 'auth/email-already-in-use':
+              alert('Email já está em uso por outra conta')
+              this.email = ''
+              this.password = ''
+              break
+            case 'auth/weak-password':
+              alert('Senha fraca. Tente novamente')
+              this.password = ''
+              break
+            case 'auth/invalid-email':
+              alert('Digite um email valido')
+              this.email = ''
+              this.password = ''
+              break
+            default:
+              alert(errorMessage)
+          }
+          // if (errorCode === 'auth/weak-password') {
+          //   alert('The password is too weak.')
+          // } else {
+          //   alert(errorMessage)
+          // }
+          console.log(error)
         })
     }
   }
