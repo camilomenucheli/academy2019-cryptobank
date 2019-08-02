@@ -247,7 +247,7 @@ export default {
     width: 334pt;
     margin-top: 60px;
     margin-bottom: 60px;
-    max-width: 90%;
+    max-width: 95%;
   }
 
   #back {

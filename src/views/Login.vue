@@ -120,7 +120,7 @@ export default {
   }
 
   .logo {
-    margin: auto;
+    margin: 0 auto;
     display: block;
   }
 
