@@ -1,14 +1,10 @@
 <template>
   <header class="header">
-    <div class="action action-left">
-      <slot name="action-left" />
-    </div>
+
     <div class="wrapper-logo">
       <img class="logo" :src="require('../assets/logo.svg')" alt="Logo"/>
     </div>
-    <div class="action action-right">
-      <slot name="action-right" />
-    </div>
+
   </header>
 </template>
 
@@ -29,10 +25,11 @@ export default {
 }
 .logo {
   width: 334pt;
-  height: 104pt;
+  height: 65pt;
   margin: auto;
   display: block;
-  max-width: 100%;
+  max-width: 90%;
+  margin-top: 10pt;
 }
 .action {
   width: 40px;
@@ -43,6 +40,5 @@ export default {
 }
 .wrapper-logo {
   flex: 1;
-  margin: 5px;
 }
 </style>

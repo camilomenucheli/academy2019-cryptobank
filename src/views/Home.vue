@@ -5,10 +5,12 @@
         <img class="icon" :src="require('../assets/logo.svg')">
       </div>
     </Header>
-    <h3>Olá, {{this.user}}</h3>
-    <span @click="signOut">
-        Sair
-    </span>
+    <div id="top">
+      <p id="userName">Olá, {{this.user}}</p>
+      <p id="btnSignOut" @click="signOut">
+          Sair
+      </p>
+    </div>
     <div class="balance">
       <p>Saldo disponível</p>
       <p id="balance">$KA {{this.balance}}</p>
@@ -165,7 +167,7 @@ export default {
   .home > .balance > #balance {
     margin-top: -15px;
     margin-bottom: -5px;
-    font-size: 50px;
+    font-size: 45px;
   }
 
   .home > .statement {
@@ -179,7 +181,7 @@ export default {
     text-align: left;
     overflow: auto;
     max-width: 90%;
-    max-height: 25%;
+    max-height: 35%;
   }
 
   .home > .actions > button[type="navigate"] {
@@ -202,8 +204,23 @@ export default {
     float: left;
   }
 
-  span {
+  #top {
+    width: 334pt;
+    height: 25pt;;
+    color: #fff;
+    margin: 0 auto;
+    padding: 0 10pt;
+    text-align: left;
+    max-width: 90%;
+  }
+  #userName {
+    float: left;
+    font-weight: bold;
+  }
+
+  #btnSignOut {
     cursor: pointer;
+    float: right;
   }
 
 </style>

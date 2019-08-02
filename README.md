@@ -1,8 +1,18 @@
 # academy2019-cryptobank
 
+### The project is hosted in the URL
+
+[firebaseapp.com](https://cryptobank-df21e.firebaseapp.com/)
+[web.app](https://cryptobank-df21e.web.app/)
+
 ## Project setup
 ```
 yarn install
+```
+
+### Run firebase-tools
+```
+npm install -g firebase-tools
 ```
 
 ### Compiles and hot-reloads for development

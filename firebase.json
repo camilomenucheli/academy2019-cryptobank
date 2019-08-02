@@ -13,11 +13,37 @@
     "source": "functions"
   },
   "hosting": {
-    "public": "public",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+			{
+				"source":"**",
+        "destination":"/index.html",
+        "headers": [ {
+          "key": "Cache-Control",
+          "value": "max-age=7200"
+        } ]
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(svg|png)",
+        "headers": [ {
+        "key": "Cache-Control",
+        "value": "max-age=31557600"
+        } ]
+      },
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [ {
+        "key": "Cache-Control",
+        "value": "max-age=31557600"
+        } ]
+      }
     ]
   }
 }
