@@ -111,6 +111,7 @@ export default {
                   statement: firebase.firestore.FieldValue.arrayUnion(statement)
                 })
                 alert('Pagamento realizado com sucesso!')
+                this.value = null
               }
             }
           })

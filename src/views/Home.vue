@@ -32,7 +32,7 @@
         <div v-if="statement.type === 'Transferência enviada'">
           <br>
           Data = {{statement.createAt}} <br>
-          Tipo = {{statement.type}} -
+          Tipo = {{statement.type}} <br>
           Valor = $KA {{statement.value}}<br>
           Para = {{statement.recipient}}
           <br>
@@ -40,7 +40,7 @@
         <div v-else-if="statement.type === 'Transferência recebida'">
           <br>
           Data = {{statement.createAt}} <br>
-          Tipo = {{statement.type}} -
+          Tipo = {{statement.type}} <br>
           Valor = $KA {{statement.value}}<br>
           De = {{statement.recipient}}
           <br>
